@@ -1,4 +1,4 @@
-const PostsRepository = require('../repositories/posts.repository')
+const PostsRepository = require('../repositories/posts.repository');
 
 class PostsService {
     postRepository = new PostsRepository();
@@ -8,40 +8,44 @@ class PostsService {
 
         allPost.sort((a, b) => {
             return b.createdAt - a.createdAt;
-        })
+        });
 
         return allPost.map((post) => {
             return {
-              postId: post.postId,
-              nickname: post.nickname,
-              title: post.title,
-              createdAt: post.createdAt,
-              updatedAt: post.updatedAt
-            }
+                postId: post.postId,
+                nickname: post.nickname,
+                title: post.title,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
+            };
         });
-    }
+    };
 
     createPost = async (userId, nickname, title, content) => {
-      // 저장소(Repository)에게 데이터를 요청합니다.
-      const createPostData = await this.postRepository.createPost(userId, nickname, title, content);
+        // 저장소(Repository)에게 데이터를 요청합니다.
+        const createPostData = await this.postRepository.createPost(
+            userId,
+            nickname,
+            title,
+            content
+        );
 
-      // 비즈니스 로직을 수행한 후 사용자에게 보여줄 데이터를 가공합니다.
-      return {
-        postId: createPostData.null,
-        nickname: createPostData.nickname,
-        title: createPostData.title,
-        content: createPostData.content,
-        createdAt: createPostData.createdAt,
-        updatedAt: createPostData.updatedAt,
-      };
-    }
+        // 비즈니스 로직을 수행한 후 사용자에게 보여줄 데이터를 가공합니다.
+        return {
+            postId: createPostData.null,
+            nickname: createPostData.nickname,
+            title: createPostData.title,
+            content: createPostData.content,
+            createdAt: createPostData.createdAt,
+            updatedAt: createPostData.updatedAt,
+        };
+    };
 
     findOnePost = async (postId) => {
-
         const postDetail = await this.postRepository.findOnePost(postId);
 
         if (!postDetail) {
-            throw new Error("해당 게시글이 존재하지 않습니다.")
+            throw new Error('해당 게시글이 존재하지 않습니다.');
         }
 
         return {
@@ -51,12 +55,16 @@ class PostsService {
             content: postDetail.content,
             createdAt: postDetail.createdAt,
             updatedAt: postDetail.updatedAt,
-        }
-    }
+        };
+    };
 
     amendPost = async (postId, userId, title, content) => {
-        
-        const amendPostData = await this.postRepository.amendPost(postId, userId, title, content);
+        const amendPostData = await this.postRepository.amendPost(
+            postId,
+            userId,
+            title,
+            content
+        );
 
         return {
             postId: amendPostData.postId,
@@ -65,14 +73,48 @@ class PostsService {
             content: amendPostData.content,
             createdAt: amendPostData.createdAt,
             updatedAt: amendPostData.updatedAt,
-        }
-    }
+        };
+    };
 
     deletePost = async (postId, userId) => {
-
-        const deletePostData = await this.postRepository.deletePost(postId, userId);
+        const deletePostData = await this.postRepository.deletePost(
+            postId,
+            userId
+        );
 
         return deletePostData;
+    };
+
+    getLikePosts = async ({userId}) => {
+        const getLikePostAll = await this.postRepository.getLikePosts({userId});
+        
+        getLikePostAll.sort((a, b) => {
+            return b.likesCount - a.likesCount;
+        })
+
+        return getLikePostAll.map((post) => {
+            return {
+                postId: post.postId,
+                nickname: post.nickname,
+                title: post.title,
+                likesCount :post.likesCount,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
+            }
+        })
+    }
+
+    putLike = async({postId, userId}) => {
+
+        const likeLog = await this.postRepository.findLikeLog({postId, userId});
+
+        if (!likeLog) {
+            await this.postRepository.increaseLike({postId, userId});
+            return {message: "해당 게시글에 좋아요를 눌렀습니다."}
+        } else {
+            await this.postRepository.decreaseLike({postId, userId});
+            return {message: "해당 게시글에 좋아요를 취소하였습니다."}
+        }
     }
 }
 

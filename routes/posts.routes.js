@@ -5,8 +5,8 @@ const postsController = new PostsController();
 const authMiddleware = require('../middlewares/auth-middleware');
 
 router.get('/', postsController.getPosts);
-// router.get('/like', authMiddleware, postsController.getLike)
-// router.put('/:postId/like', authMiddleware, postsController.putLike)
+router.get('/like', authMiddleware, postsController.getLikePosts)
+router.put('/:postId/like', authMiddleware, postsController.putLike)
 router.get('/:postId', authMiddleware, postsController.getPostsDetail);
 router.post('/', authMiddleware, postsController.createPost);
 router.put('/:postId', authMiddleware, postsController.amendPost);

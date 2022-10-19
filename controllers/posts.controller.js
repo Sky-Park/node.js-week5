@@ -47,10 +47,9 @@ class PostsController {
         const { postId } = req.params;
         const { title, content } = req.body;
         const { userId } = res.locals.users
-        
         try {
-            const amedPostOne = await this.postService.amendPost({postId, userId, title, content})
-            res.status(201).json({ data : amedPostOne, "message" : "게시글이 수정되었습니다." })
+            await this.postService.amendPost({postId, userId, title, content})
+            res.status(201).json({message : "게시글이 수정되었습니다." })
         } catch (error) {
             res.status(400).json({error: error.message})
         }              
@@ -58,7 +57,7 @@ class PostsController {
 
     deletePost = async (req, res, next) => {
         const { postId } = req.params;
-        const { userId } = req.locals.users;
+        const { userId } = res.locals.users;
         
         const deletePostOne = await this.postService.deletePost({postId, userId});
 
@@ -66,6 +65,29 @@ class PostsController {
             res.status(201).json({"message": "게시글이 삭제되었습니다."})
         } else {
             res.status(404).json({ "message": "게시글이 존재하지않습니다."})
+        }
+    }
+
+    getLikePosts = async (req, res, next) => {
+        const { userId } = res.locals.users;
+        try{
+            const getLikePost = await this.postService.getLikePosts({userId})
+            res.status(200).json({data: getLikePost})
+        } catch (error) {
+            res.status(400).json({error: error.message})
+        }
+
+    }
+    
+    putLike = async (req, res, next) => {
+        const { postId } = req.params;
+        const { userId } = res.locals.users;
+
+        try{
+            const Like = await this.postService.putLike({postId, userId})
+            res.status(200).json({data: Like})
+        } catch (error) {
+            res.status(400).json({error: error.message})
         }
     }
 }
