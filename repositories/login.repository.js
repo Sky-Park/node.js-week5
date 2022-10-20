@@ -6,7 +6,7 @@ class LoginRepository {
         
         
         const user = await users.findOne({ where: { nickname, password } })
-
+        
         return user;
     }
 }

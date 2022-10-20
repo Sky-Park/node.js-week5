@@ -13,3 +13,4 @@ app.listen(port, () => {
   console.log(port, '포트로 서버 열림');
 });
 //서버 여는 명령어
+module.exports = app;
