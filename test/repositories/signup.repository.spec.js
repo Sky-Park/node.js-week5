@@ -1,4 +1,4 @@
-const SignUpRepository = require('../../repositories/signup.repository');
+// const SignUpRepository = require('../../repositories/signup.repository');
 // const {
 //     createUserResultSchema,
 //     createUserInputSchema,
@@ -8,7 +8,7 @@ const SignUpRepository = require('../../repositories/signup.repository');
 //     create: jest.fn(),
 // });
 const request = require('supertest');
-const app = require('../../app');
+const app = require('../../app.js');
 const db = require('../../models');
 
 beforeAll(async () => {
@@ -56,48 +56,35 @@ describe('signup test', () => {
     //     //create의 결과값이 retunr값과 동일한가?
     //     expect(creatOneUser).toStrictEqual(createUserResultSchema);
     // });
+
+
     // test('POST /signup 테스트', async () => {
-    //             await request(app)
-    //                 .post('/signup')
-    //                 .send({
-    //                     username: 'developer',
-    //                     password: '1234',
-    //                     confirmPassword: '1234',
-    //                 })
-    //                 .expect(200)
-    //                 .then((res) => {
-    //                     expect(res.body).toStrictEqual({});
-    //                 });
-    //         });
-
-
-    test('POST /signup 테스트', async () => {
-        await request(app)
-            .post('/signup')
-            .send({
-                username: 'Developer',
-                password: '1234',
-                confirmPassword: '1234',
-            })
-            .expect(201)
-            .then((res) => {
-                expect(res.body).toStrictEqual({});
-            });
-    });
-
-
-    // test('POST /login 테스트', async () => {
     //     await request(app)
-    //         .post('/login')
+    //         .post('/signup')
     //         .send({
-    //             username: 'Developer',
-    //             password: '1234',
+    //             "nickname": "Developer1",
+    //             "password": "1234",
+    //             "confirmPassword": "1234",
     //         })
-    //         .expect(200)
+    //         .expect(201)
     //         .then((res) => {
-    //             expect(res.body).toStrictEqual({
-    //                 token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI1NTg5NH0.wYmqjN3ZoN6lzWcnTr0ZZy4EZkLPGmNPY_I7c2LY58w',
-    //             });
+    //             expect(res.body).toStrictEqual({});
     //         });
     // });
+
+
+    test('POST /login 테스트', async () => {
+        await request(app)
+            .post('/login')
+            .send({
+                nickname: 'Developer',
+                password: '1234',
+            })
+            .expect(200)
+            .then((res) => {
+                expect(res.body).toStrictEqual({
+                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsImlhdCI6bnVsbH0.AXA4L6CfPPqtRGgNhcoJBYA-X5sxmvYpAENGHKH0wwo',
+                });
+            });
+    });
 });
